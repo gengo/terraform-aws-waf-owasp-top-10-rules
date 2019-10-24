@@ -286,45 +286,45 @@ resource "aws_wafregional_byte_match_set" "owasp_04_paths_string_set" {
     }
   }
 
-  byte_match_tuples {
-    text_transformation   = "URL_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "HTML_ENTITY_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "URL_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "HTML_ENTITY_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
+#  byte_match_tuples {
+#    text_transformation   = "URL_DECODE"
+#    target_string         = "://"
+#    positional_constraint = "CONTAINS"
+#
+#    field_to_match {
+#      type = "URI"
+#    }
+#  }
+#
+#  byte_match_tuples {
+#    text_transformation   = "HTML_ENTITY_DECODE"
+#    target_string         = "://"
+#    positional_constraint = "CONTAINS"
+#
+#    field_to_match {
+#      type = "URI"
+#    }
+#  }
+#
+#  byte_match_tuples {
+#    text_transformation   = "URL_DECODE"
+#    target_string         = "://"
+#    positional_constraint = "CONTAINS"
+#
+#    field_to_match {
+#      type = "QUERY_STRING"
+#    }
+#  }
+#
+#  byte_match_tuples {
+#    text_transformation   = "HTML_ENTITY_DECODE"
+#    target_string         = "://"
+#    positional_constraint = "CONTAINS"
+#
+#    field_to_match {
+#      type = "QUERY_STRING"
+#    }
+#  }
 }
 
 resource "aws_wafregional_rule" "owasp_04_paths_rule" {
@@ -946,92 +946,92 @@ resource "aws_waf_rule" "owasp_02_auth_token_rule" {
 ## OWASP Top 10 A3
 ### Mitigate Cross Site Scripting Attacks
 ### Matches attempted XSS patterns in the URI, QUERY_STRING, BODY, COOKIES
-resource "aws_waf_xss_match_set" "owasp_03_xss_set" {
-  count = "${lower(var.target_scope) == "global" ? "1" : "0"}"
-
-  name = "${lower(var.service_name)}-owasp-03-detect-xss-${random_id.this.0.hex}"
-
-  xss_match_tuples {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "BODY"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "BODY"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "HEADER"
-      data = "cookie"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "HEADER"
-      data = "cookie"
-    }
-  }
-}
-
-resource "aws_waf_rule" "owasp_03_xss_rule" {
-  depends_on = ["aws_waf_xss_match_set.owasp_03_xss_set"]
-
-  count = "${lower(var.target_scope) == "global" ? "1" : "0"}"
-
-  name        = "${lower(var.service_name)}-owasp-03-mitigate-xss-${random_id.this.0.hex}"
-  metric_name = "${lower(var.service_name)}OWASP03MitigateXSS${random_id.this.0.hex}"
-
-  predicates {
-    data_id = "${aws_waf_xss_match_set.owasp_03_xss_set.0.id}"
-    negated = "false"
-    type    = "XssMatch"
-  }
-}
+#resource "aws_waf_xss_match_set" "owasp_03_xss_set" {
+#  count = "${lower(var.target_scope) == "global" ? "1" : "0"}"
+#
+#  name = "${lower(var.service_name)}-owasp-03-detect-xss-${random_id.this.0.hex}"
+#
+#  xss_match_tuples {
+#    text_transformation = "URL_DECODE"
+#
+#    field_to_match {
+#      type = "URI"
+#    }
+#  }
+#
+#  xss_match_tuples {
+#    text_transformation = "HTML_ENTITY_DECODE"
+#
+#    field_to_match {
+#      type = "URI"
+#    }
+#  }
+#
+#  xss_match_tuples {
+#    text_transformation = "URL_DECODE"
+#
+#    field_to_match {
+#      type = "QUERY_STRING"
+#    }
+#  }
+#
+#  xss_match_tuples {
+#    text_transformation = "HTML_ENTITY_DECODE"
+#
+#    field_to_match {
+#      type = "QUERY_STRING"
+#    }
+#  }
+#
+#  xss_match_tuples {
+#    text_transformation = "URL_DECODE"
+#
+#    field_to_match {
+#      type = "BODY"
+#    }
+#  }
+#
+#  xss_match_tuples {
+#    text_transformation = "HTML_ENTITY_DECODE"
+#
+#    field_to_match {
+#      type = "BODY"
+#    }
+#  }
+#
+#  xss_match_tuples {
+#    text_transformation = "URL_DECODE"
+#
+#    field_to_match {
+#      type = "HEADER"
+#      data = "cookie"
+#    }
+#  }
+#
+#  xss_match_tuples {
+#    text_transformation = "HTML_ENTITY_DECODE"
+#
+#    field_to_match {
+#      type = "HEADER"
+#      data = "cookie"
+#    }
+#  }
+#}
+#
+#resource "aws_waf_rule" "owasp_03_xss_rule" {
+#  depends_on = ["aws_waf_xss_match_set.owasp_03_xss_set"]
+#
+#  count = "${lower(var.target_scope) == "global" ? "1" : "0"}"
+#
+#  name        = "${lower(var.service_name)}-owasp-03-mitigate-xss-${random_id.this.0.hex}"
+#  metric_name = "${lower(var.service_name)}OWASP03MitigateXSS${random_id.this.0.hex}"
+#
+#  predicates {
+#    data_id = "${aws_waf_xss_match_set.owasp_03_xss_set.0.id}"
+#    negated = "false"
+#    type    = "XssMatch"
+#  }
+#}
 
 ## OWASP Top 10 A4
 ### Path Traversal, LFI, RFI
@@ -1081,45 +1081,45 @@ resource "aws_waf_byte_match_set" "owasp_04_paths_string_set" {
     }
   }
 
-  byte_match_tuples {
-    text_transformation   = "URL_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "HTML_ENTITY_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "URL_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "HTML_ENTITY_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
+#  byte_match_tuples {
+#    text_transformation   = "URL_DECODE"
+#    target_string         = "://"
+#    positional_constraint = "CONTAINS"
+#
+#    field_to_match {
+#      type = "URI"
+#    }
+#  }
+#
+#  byte_match_tuples {
+#    text_transformation   = "HTML_ENTITY_DECODE"
+#    target_string         = "://"
+#    positional_constraint = "CONTAINS"
+#
+#    field_to_match {
+#      type = "URI"
+#    }
+#  }
+#
+#  byte_match_tuples {
+#    text_transformation   = "URL_DECODE"
+#    target_string         = "://"
+#    positional_constraint = "CONTAINS"
+#
+#    field_to_match {
+#      type = "QUERY_STRING"
+#    }
+#  }
+#
+#  byte_match_tuples {
+#    text_transformation   = "HTML_ENTITY_DECODE"
+#    target_string         = "://"
+#    positional_constraint = "CONTAINS"
+#
+#    field_to_match {
+#      type = "QUERY_STRING"
+#    }
+#  }
 }
 
 resource "aws_waf_rule" "owasp_04_paths_rule" {
