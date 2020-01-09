@@ -148,96 +148,6 @@ resource "aws_wafregional_rule" "owasp_02_auth_token_rule" {
   }
 }
 
-## OWASP Top 10 A3
-### Mitigate Cross Site Scripting Attacks
-### Matches attempted XSS patterns in the URI, QUERY_STRING, BODY, COOKIES
-resource "aws_wafregional_xss_match_set" "owasp_03_xss_set" {
-  count = "${lower(var.target_scope) == "regional" ? "1" : "0"}"
-
-  name = "${lower(var.service_name)}-owasp-03-detect-xss-${random_id.this.0.hex}"
-
-  xss_match_tuple {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  xss_match_tuple {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  xss_match_tuple {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  xss_match_tuple {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  xss_match_tuple {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "BODY"
-    }
-  }
-
-  xss_match_tuple {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "BODY"
-    }
-  }
-
-  xss_match_tuple {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "HEADER"
-      data = "cookie"
-    }
-  }
-
-  xss_match_tuple {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "HEADER"
-      data = "cookie"
-    }
-  }
-}
-
-resource "aws_wafregional_rule" "owasp_03_xss_rule" {
-  depends_on = ["aws_wafregional_xss_match_set.owasp_03_xss_set"]
-
-  count = "${lower(var.target_scope) == "regional" ? "1" : "0"}"
-
-  name        = "${lower(var.service_name)}-owasp-03-mitigate-xss-${random_id.this.0.hex}"
-  metric_name = "${lower(var.service_name)}OWASP03MitigateXSS${random_id.this.0.hex}"
-
-  predicate {
-    data_id = "${aws_wafregional_xss_match_set.owasp_03_xss_set.0.id}"
-    negated = "false"
-    type    = "XssMatch"
-  }
-}
-
 ## OWASP Top 10 A4
 ### Path Traversal, LFI, RFI
 ### Matches request patterns designed to traverse filesystem paths, and include local or remote files
@@ -279,46 +189,6 @@ resource "aws_wafregional_byte_match_set" "owasp_04_paths_string_set" {
   byte_match_tuples {
     text_transformation   = "HTML_ENTITY_DECODE"
     target_string         = "../"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "URL_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "HTML_ENTITY_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "URL_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "HTML_ENTITY_DECODE"
-    target_string         = "://"
     positional_constraint = "CONTAINS"
 
     field_to_match {
@@ -711,7 +581,6 @@ resource "aws_wafregional_rule_group" "owasp_top_10" {
   depends_on = [
     "aws_wafregional_rule.owasp_01_sql_injection_rule",
     "aws_wafregional_rule.owasp_02_auth_token_rule",
-    "aws_wafregional_rule.owasp_03_xss_rule",
     "aws_wafregional_rule.owasp_04_paths_rule",
     "aws_wafregional_rule.owasp_06_php_insecure_rule",
     "aws_wafregional_rule.owasp_07_size_restriction_rule",
@@ -751,16 +620,6 @@ resource "aws_wafregional_rule_group" "owasp_top_10" {
 
     priority = "3"
     rule_id  = "${aws_wafregional_rule.owasp_01_sql_injection_rule.0.id}"
-    type     = "REGULAR"
-  }
-
-  activated_rule {
-    action {
-      type = "BLOCK"
-    }
-
-    priority = "4"
-    rule_id  = "${aws_wafregional_rule.owasp_03_xss_rule.0.id}"
     type     = "REGULAR"
   }
 
@@ -943,96 +802,6 @@ resource "aws_waf_rule" "owasp_02_auth_token_rule" {
   }
 }
 
-## OWASP Top 10 A3
-### Mitigate Cross Site Scripting Attacks
-### Matches attempted XSS patterns in the URI, QUERY_STRING, BODY, COOKIES
-resource "aws_waf_xss_match_set" "owasp_03_xss_set" {
-  count = "${lower(var.target_scope) == "global" ? "1" : "0"}"
-
-  name = "${lower(var.service_name)}-owasp-03-detect-xss-${random_id.this.0.hex}"
-
-  xss_match_tuples {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "BODY"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "BODY"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "HEADER"
-      data = "cookie"
-    }
-  }
-
-  xss_match_tuples {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "HEADER"
-      data = "cookie"
-    }
-  }
-}
-
-resource "aws_waf_rule" "owasp_03_xss_rule" {
-  depends_on = ["aws_waf_xss_match_set.owasp_03_xss_set"]
-
-  count = "${lower(var.target_scope) == "global" ? "1" : "0"}"
-
-  name        = "${lower(var.service_name)}-owasp-03-mitigate-xss-${random_id.this.0.hex}"
-  metric_name = "${lower(var.service_name)}OWASP03MitigateXSS${random_id.this.0.hex}"
-
-  predicates {
-    data_id = "${aws_waf_xss_match_set.owasp_03_xss_set.0.id}"
-    negated = "false"
-    type    = "XssMatch"
-  }
-}
-
 ## OWASP Top 10 A4
 ### Path Traversal, LFI, RFI
 ### Matches request patterns designed to traverse filesystem paths, and include local or remote files
@@ -1074,46 +843,6 @@ resource "aws_waf_byte_match_set" "owasp_04_paths_string_set" {
   byte_match_tuples {
     text_transformation   = "HTML_ENTITY_DECODE"
     target_string         = "../"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "URL_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "HTML_ENTITY_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "URI"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "URL_DECODE"
-    target_string         = "://"
-    positional_constraint = "CONTAINS"
-
-    field_to_match {
-      type = "QUERY_STRING"
-    }
-  }
-
-  byte_match_tuples {
-    text_transformation   = "HTML_ENTITY_DECODE"
-    target_string         = "://"
     positional_constraint = "CONTAINS"
 
     field_to_match {
@@ -1506,7 +1235,6 @@ resource "aws_waf_rule_group" "owasp_top_10" {
   depends_on = [
     "aws_waf_rule.owasp_01_sql_injection_rule",
     "aws_waf_rule.owasp_02_auth_token_rule",
-    "aws_waf_rule.owasp_03_xss_rule",
     "aws_waf_rule.owasp_04_paths_rule",
     "aws_waf_rule.owasp_06_php_insecure_rule",
     "aws_waf_rule.owasp_07_size_restriction_rule",
@@ -1546,16 +1274,6 @@ resource "aws_waf_rule_group" "owasp_top_10" {
 
     priority = "3"
     rule_id  = "${aws_waf_rule.owasp_01_sql_injection_rule.0.id}"
-    type     = "REGULAR"
-  }
-
-  activated_rule {
-    action {
-      type = "BLOCK"
-    }
-
-    priority = "4"
-    rule_id  = "${aws_waf_rule.owasp_03_xss_rule.0.id}"
     type     = "REGULAR"
   }
 
