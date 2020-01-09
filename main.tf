@@ -14,7 +14,7 @@ resource "random_id" "this" {
 
 ## OWASP Top 10 A1
 ### Mitigate SQL Injection Attacks
-### Matches attempted SQLi patterns in the URI, QUERY_STRING, BODY, COOKIES
+### Matches attempted SQLi patterns in the URI, QUERY_STRING, COOKIES
 resource "aws_wafregional_sql_injection_match_set" "owasp_01_sql_injection_set" {
   count = "${lower(var.target_scope) == "regional" ? "1" : "0"}"
 
@@ -49,22 +49,6 @@ resource "aws_wafregional_sql_injection_match_set" "owasp_01_sql_injection_set" 
 
     field_to_match {
       type = "QUERY_STRING"
-    }
-  }
-
-  sql_injection_match_tuple {
-    text_transformation = "URL_DECODE"
-
-    field_to_match {
-      type = "BODY"
-    }
-  }
-
-  sql_injection_match_tuple {
-    text_transformation = "HTML_ENTITY_DECODE"
-
-    field_to_match {
-      type = "BODY"
     }
   }
 
