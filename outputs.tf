@@ -13,11 +13,6 @@ output "rule02_auth_token_rule_id" {
   value       = "${lower(var.target_scope) == "regional" ? element(concat(aws_wafregional_rule.owasp_02_auth_token_rule.*.id, list("NOT_CREATED")), "0") : element(concat(aws_waf_rule.owasp_02_auth_token_rule.*.id, list("NOT_CREATED")), "0")}"
 }
 
-#output "rule03_xss_rule_id" {
-#  description = "AWS WAF Rule which mitigates Cross Site Scripting Attacks."
-#  value       = "${lower(var.target_scope) == "regional" ? element(concat(aws_wafregional_rule.owasp_03_xss_rule.*.id, list("NOT_CREATED")), "0") : element(concat(aws_waf_rule.owasp_03_xss_rule.*.id, list("NOT_CREATED")), "0")}"
-#}
-
 output "rule04_paths_rule_id" {
   description = "AWS WAF Rule which mitigates Path Traversal, LFI, RFI."
   value       = "${lower(var.target_scope) == "regional" ? element(concat(aws_wafregional_rule.owasp_04_paths_rule.*.id, list("NOT_CREATED")), "0") : element(concat(aws_waf_rule.owasp_04_paths_rule.*.id, list("NOT_CREATED")), "0")}"
